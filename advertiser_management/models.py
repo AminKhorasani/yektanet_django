@@ -13,4 +13,4 @@ class Ad(models.Model):
     img_url = models.CharField()
     clicks = models.PositiveIntegerField()
     views = models.PositiveIntegerField()
-    
+
