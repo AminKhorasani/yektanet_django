@@ -20,3 +20,11 @@ def ad_inc_clicks(request, object_id):
     ad = Ad.objects.get(id=object_id)
     ad.inc_clicks()
     return redirect(ad.link)
+
+
+def ad_creator(request):
+    form = AdForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+    context = {'form': form}
+    return render(request, 'advertiser_management/ad_create.html', context)
