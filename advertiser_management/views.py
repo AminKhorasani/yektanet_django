@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from advertiser_management.models import Advertiser, Ad
 from django.shortcuts import redirect
+from .forms import AdForm
 
 
 def index(request):

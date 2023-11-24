@@ -11,4 +11,3 @@ class AdForm(forms.ModelForm):
             'img_url',
             'link'
         ]
-
