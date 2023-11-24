@@ -14,7 +14,7 @@
             <div class="card-body">
                 <div class="row">
                 <!-- inja ads -> ad_set.all -->
-		    {% for ad in advertiser.ad_set.all %}
+		    {% for ad in advertiser.ads.all %}
 		        <div class="card col-md-2 p-0 mx-2">
 		            <a href="/click/{{ ad.id }}/">
 		                <img src="{{ ad.img_url }}"
