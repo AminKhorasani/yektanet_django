@@ -15,3 +15,4 @@ class Ad(models.Model):
     clicks = models.PositiveIntegerField(default=0)
     views = models.PositiveIntegerField(default=0)
 
+
