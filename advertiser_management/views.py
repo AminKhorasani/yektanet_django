@@ -29,6 +29,7 @@ def ad_creator(request):
         form.save()
     context = {'form': form}
     if request.method == 'GET':
+        context = {'form': form}
         return render(request,'advertiser_management/ad_create.html', context)
-    elif request.method == 'POST':
+    else:
         return redirect(reverse('advertiser_list'))
