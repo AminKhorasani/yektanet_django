@@ -1,4 +1,13 @@
 from django.shortcuts import render
+from advertiser_management.models import Advertiser, Ad
+from django.shortcuts import redirect
 
-# Create your views here.
 
+def index(request):
+    advertisers = Advertiser.objects.all()
+    context = {'advertisers': advertisers}
+    return render(request, 'advertiser_management/ads.html', context)
+
+
+def detail(request, object_id):
+    return redirect(Ad.objects.get(id=object_id).link)
