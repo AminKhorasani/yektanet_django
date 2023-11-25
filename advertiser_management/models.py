@@ -18,13 +18,13 @@ class Ad(models.Model):
     views = models.PositiveIntegerField(default=0)
 
 
-class Views(models.Model):
+class View(models.Model):
     ad = models.ForeignKey(Ad, on_delete=models.CASCADE, null=True)
     ip = models.GenericIPAddressField()
     view_time = models.DateTimeField()
 
 
-class Clicks(models.Model):
+class Click(models.Model):
     ad = models.ForeignKey(Ad, on_delete=models.CASCADE, null=True)
     ip = models.GenericIPAddressField()
     click_time = models.DateTimeField()

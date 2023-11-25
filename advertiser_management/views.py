@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from advertiser_management.models import Advertiser, Ad, Clicks, Views
+from advertiser_management.models import Advertiser, Ad, Click, View
 from django.shortcuts import redirect
 from .forms import AdForm
 from django.urls import reverse
@@ -13,14 +13,14 @@ def index(request):
     for advertiser in advertisers:
         ads_list = advertiser.ads.all()
         for ad in ads_list:
-            Views.objects.create(ad=ad, ip='', view_time=datetime.now())
+            View.objects.create(ad=ad, ip='', view_time=datetime.now())
 
     return render(request, 'advertiser_management/ads.html', context)
 
 
 def ad_inc_clicks(request, object_id):
     ad = Ad.objects.get(id=object_id)
-    Clicks.objects.create(ad=ad, ip='', click_time=datetime.now())
+    Click.objects.create(ad=ad, ip='', click_time=datetime.now())
     return redirect(ad.link)
 
 
