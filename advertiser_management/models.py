@@ -18,7 +18,7 @@ class Ad(models.Model):
     views = models.PositiveIntegerField(default=0)
 
 
-class View(models.Model):
+class Views(models.Model):
     ad = models.ForeignKey(Ad, on_delete=models.CASCADE, null=True)
     ip = models.GenericIPAddressField()
     click_time = models.DateTimeField()
