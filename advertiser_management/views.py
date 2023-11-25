@@ -27,7 +27,6 @@ def ad_creator(request):
     form = AdForm(request.POST or None)
     if form.is_valid():
         form.save()
-    context = {'form': form}
     if request.method == 'GET':
         context = {'form': form}
         return render(request,'advertiser_management/ad_create.html', context)
