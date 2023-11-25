@@ -8,17 +8,6 @@ class Advertiser(models.Model):
     clicks = models.PositiveIntegerField(default=0)
     views = models.PositiveIntegerField(default=0)
 
-    def __str__(self):
-        return self.name
-
-    def inc_clicks(self):
-        self.clicks += 1
-        self.save()
-
-    def inc_views(self):
-        self.views += 1
-        self.save()
-
 
 class Ad(models.Model):
     advertiser = models.ForeignKey(Advertiser, on_delete=models.CASCADE, related_name='ads',null=True)
@@ -28,15 +17,14 @@ class Ad(models.Model):
     clicks = models.PositiveIntegerField(default=0)
     views = models.PositiveIntegerField(default=0)
 
-    def __str__(self):
-        return self.title
 
-    def inc_clicks(self):
-        self.clicks += 1
-        self.advertiser.inc_clicks()
-        self.save()
+class View(models.Model):
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE, null=True)
+    ip = models.GenericIPAddressField()
+    click_time = models.DateTimeField()
 
-    def inc_views(self):
-        self.views += 1
-        self.advertiser.inc_views()
-        self.save()
+
+class Clicks(models.Model):
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE, null=True)
+    ip = models.GenericIPAddressField()
+    view_time = models.DateTimeField()
