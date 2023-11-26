@@ -4,7 +4,8 @@ from .models import Ad, Advertiser
 
 @admin.register(Ad)
 class AdAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ('approve',)
+    search_fields = ('title',)
 
 
 class AdTabular(admin.TabularInline):
