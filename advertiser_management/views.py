@@ -25,6 +25,7 @@ def ad_inc_clicks(request, object_id):
 
 def ad_creator(request):
     form = AdForm(request.POST or None)
+    print(request.POST)
     if form.is_valid():
         form.save()
     if request.method == 'GET':
