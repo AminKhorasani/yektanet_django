@@ -12,6 +12,7 @@ class Ad(models.Model):
     title = models.CharField(max_length=400)
     link = models.URLField()
     img_url = models.URLField()
+    approve = models.BooleanField(default=False)
 
 
 class View(models.Model):
