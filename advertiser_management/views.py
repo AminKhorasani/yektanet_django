@@ -42,3 +42,21 @@ class AdCreatorView(TemplateView):
         if form.is_valid():
             form.save()
         return redirect(reverse('advertiser_list'))
+
+
+class ReportView(View):
+
+    @staticmethod
+    def get(request, *args, **kwargs):
+        clicks = Click.objects.all()
+        views = ViewModel.objects.all()
+        context = []
+        for time in range(24):
+            info = {
+                'time': '%s:00:00 - %s:59:59' % (time, time),
+                'number_of_clicks': clicks.filter(click_time__hour=time).count(),
+                'number_of_views': views.filter(view_time__hour=time).count()
+            }
+
+            context.append(info)
+        return render(request, 'advertiser_management/report.html', {'context': context})
