@@ -51,16 +51,35 @@ class ReportView(View):
         clicks = Click.objects.all()
         views = ViewModel.objects.all()
         ads_number = Ad.objects.all().count()
-        context = []
+        total_clicks = 0
+        total_views = 0
+        clicks_views = []
 
-        for i in range(1, ads_number + 1):
-            ad_title = Ad.objects.get(id=i)
+        for j in range(1, ads_number + 1):
+            ad_object = Ad.objects.get(id=j)
+            ad_title = ad_object.title
             for time in range(24):
-                info = {
-                    'Ad': ad_title,
+                clicks_count = clicks.filter(ad__id=j, click_time__hour=time).count()
+                views_count = views.filter(ad__id=j, view_time__hour=time).count()
+                total_clicks += clicks_count
+                total_views += views_count
+                ctr = 0
+                if views_count != 0:
+                    ctr = (clicks_count / views_count).__round__(2)
+
+                clicks_views.append({
                     'time': '%s:00:00 - %s:59:59' % (time, time),
-                    'clicks_number_per_ad': clicks.filter(id=i, click_time__hour=time).count(),
-                    'views_number_per_ad': views.filter(id=i, view_time__hour=time).count(),
-                }
-                context.append(info)
-        return render(request, 'advertiser_management/report.html', {'context': context})
+                    'ctr': ctr,
+                    'clicks_number_per_ad': clicks_count,
+                    'views_number_per_ad': views_count,
+                    'Ad': ad_title,
+
+                })
+
+        sorted_clicks_views = sorted(clicks_views, key=lambda i: i['ctr'], reverse=True)
+
+        return render(request, 'advertiser_management/report.html',
+                      {
+                       'total_clicks_views': (total_clicks / total_views).__round__(2),
+                       'clicks_views': sorted_clicks_views
+                       })

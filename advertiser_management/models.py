@@ -31,3 +31,6 @@ class Click(models.Model):
     ad = models.ForeignKey(Ad, on_delete=models.CASCADE, null=True)
     ip = models.CharField(max_length=100)
     click_time = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.id)
