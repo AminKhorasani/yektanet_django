@@ -55,12 +55,12 @@ class ReportView(View):
 
         for i in range(1, ads_number + 1):
             ad_title = Ad.objects.get(id=i)
-            for time1 in range(24):
+            for time in range(24):
                 info = {
                     'Ad': ad_title,
-                    'time': '%s:00:00 - %s:59:59' % (time1, time1),
-                    'clicks_number_per_ad': clicks.filter(id=i, click_time__hour=time1).count(),
-                    'views_number_per_ad': views.filter(id=i, view_time__hour=time1).count(),
+                    'time': '%s:00:00 - %s:59:59' % (time, time),
+                    'clicks_number_per_ad': clicks.filter(id=i, click_time__hour=time).count(),
+                    'views_number_per_ad': views.filter(id=i, view_time__hour=time).count(),
                 }
                 context.append(info)
         return render(request, 'advertiser_management/report.html', {'context': context})
