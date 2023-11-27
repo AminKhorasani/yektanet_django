@@ -5,6 +5,8 @@ from .forms import AdForm
 from django.urls import reverse
 from datetime import datetime
 from django.views.generic import View, TemplateView
+from django.db.models import Avg
+
 
 
 class HomeView(View):
@@ -78,8 +80,18 @@ class ReportView(View):
 
         sorted_clicks_views = sorted(clicks_views, key=lambda i: i['ctr'], reverse=True)
 
+        average_view_time = ViewModel.objects.values_list('view_time', flat=True)
+        average_click_time = Click.objects.values_list('click_time', flat=True)
+        view_hours = map(lambda t: t.hour + (t.minute / 60.0), average_view_time)
+        click_hours = map(lambda t: t.hour + (t.minute / 60.0), average_click_time)
+        average = sum(click_hours) - sum(view_hours)
+
+        # average_view_time = ViewModel.objects.aggregate(avg_view_time=Avg('view_time'))
+        # average_click_time = Click.objects.aggregate(avg_click_time=Avg('click_time'))
+        # average =
         return render(request, 'advertiser_management/report.html',
                       {
                        'total_clicks_views': (total_clicks / total_views).__round__(2),
-                       'clicks_views': sorted_clicks_views
+                       'clicks_views': sorted_clicks_views,
+                       'average': average
                        })
