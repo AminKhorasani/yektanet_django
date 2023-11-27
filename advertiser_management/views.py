@@ -5,8 +5,6 @@ from .forms import AdForm
 from django.urls import reverse
 from datetime import datetime
 from django.views.generic import View, TemplateView
-from django.db.models import Avg
-
 
 
 class HomeView(View):
