@@ -9,25 +9,31 @@
 <body>
 
 <div class="container" dir="rtl">
-    <h3> CTR: {{ total_clicks_views }}</h3>
+    <h3> CTR: {{ ctr }}</h3>
     <h3> average: {{ average }}</h3>
 </div>
 
 <div class="container" dir="rtl">
-    {% for element in clicks_views %}
+    {% for element2,element in clicks_views %}
         <div class="card mt-2 p-2">
-            <h5 class="card-title"> time: {{ element.time }}</h5>
+            <h5 class="card-title"> time: {{ element.click_time }}</h5>
             <div class="card-body">
                 <div class="row">
                    <div class="card-body">
-                       <h6> total clicks: {{ element.clicks_number_per_ad }} </h6>
-                       <h6> total views: {{ element.views_number_per_ad }} </h6>
-                       <h6> Ad : {{ element.Ad }} </h6>
-                       <h6> CTR: {{ element.ctr }} </h6>
+                       <h6> total clicks: {{ element.click_count }} </h6>
+                       <h6> total views : {{ element2.view_count }}</h6>
+                       <h6> Ad : {{ element.ad__id }} </h6>
                    </div>
                 </div>
             </div>
         </div>
     {% endfor %}
+<!--<div class="container" dir="rtl">-->
+<!--    {% for element in views_data %}-->
+<!--        <div class="card-body">-->
+<!--            <h6> view : {{ element.view_count }} </h6>-->
+<!--&lt;!&ndash;            <h6> CTR: {{ element.ctr }} </h6>&ndash;&gt;-->
+<!--        </div>-->
+<!--    {% endfor %}-->
 </body>
 </html>

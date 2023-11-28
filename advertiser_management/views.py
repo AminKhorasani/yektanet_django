@@ -5,6 +5,10 @@ from .forms import AdForm
 from django.urls import reverse
 from datetime import datetime
 from django.views.generic import View, TemplateView
+from django.db.models.functions import ExtractHour, TruncHour, Coalesce
+from django.db.models import Count, F
+from itertools import chain
+from django.db import models
 
 
 class HomeView(View):
@@ -48,35 +52,22 @@ class ReportView(View):
 
     @staticmethod
     def get(request, *args, **kwargs):
-        clicks = Click.objects.all()
-        views = ViewModel.objects.all()
-        ads_number = Ad.objects.all().count()
-        total_clicks = 0
-        total_views = 0
-        clicks_views = []
 
-        for j in range(1, ads_number + 1):
-            ad_object = Ad.objects.get(id=j)
-            ad_title = ad_object.title
-            for time in range(24):
-                clicks_count = clicks.filter(ad__id=j, click_time__hour=time).count()
-                views_count = views.filter(ad__id=j, view_time__hour=time).count()
-                total_clicks += clicks_count
-                total_views += views_count
-                ctr = 0
-                if views_count != 0:
-                    ctr = (clicks_count / views_count).__round__(2)
+        qs_clicks = (Click.objects.values('ad__id').
+                     annotate(click_time=ExtractHour('click_time')).
+                     annotate(click_count=Count('id')))
+        qs_views = (ViewModel.objects.values('ad__id').
+                    annotate(view_time=ExtractHour('view_time')).
+                    annotate(view_count=Count('id')))
 
-                clicks_views.append({
-                    'time': '%s:00:00 - %s:59:59' % (time, time),
-                    'ctr': ctr,
-                    'clicks_number_per_ad': clicks_count,
-                    'views_number_per_ad': views_count,
-                    'Ad': ad_title,
-
-                })
-
-        sorted_clicks_views = sorted(clicks_views, key=lambda i: i['ctr'], reverse=True)
+        total_clicks = Click.objects.annotate(total_clicks=Count('id')).count()
+        total_views = ViewModel.objects.annotate(total_views=Count('id')).count()
+        ctr = total_clicks / total_views
+        # qs_ads = ((Ad.objects.values_list('id', flat=True).
+        #           annotate(clicks_time=ExtractHour('click__click_time'))).
+        #           annotate(views_time=ExtractHour('view__click_time')).
+        #           annotate(clicks_count=Count('id')).
+        #           annotate(views_count=Count('id')))
 
         average_view_time = ViewModel.objects.values_list('view_time', flat=True)
         average_click_time = Click.objects.values_list('click_time', flat=True)
@@ -86,10 +77,12 @@ class ReportView(View):
 
         # average_view_time = ViewModel.objects.aggregate(avg_view_time=Avg('view_time'))
         # average_click_time = Click.objects.aggregate(avg_click_time=Avg('click_time'))
-        # average =
+        # average = average_click_time - average_view_time
+
+        clicks_views = zip(qs_views, qs_clicks)
         return render(request, 'advertiser_management/report.html',
                       {
-                       'total_clicks_views': (total_clicks / total_views).__round__(2),
-                       'clicks_views': sorted_clicks_views,
-                       'average': average
+                       'ctr': ctr.__round__(2),
+                       'average': average,
+                       'clicks_views': clicks_views
                        })
