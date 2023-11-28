@@ -22,7 +22,12 @@
                    <div class="card-body">
                        <h6> total clicks: {{ element.click_count }} </h6>
                        <h6> total views : {{ element2.view_count }}</h6>
-                       <h6> Ad : {{ element.ad__id }} </h6>
+                       <h6>
+                       CTR:
+                        <script>
+                            document.write({{ element.click_count }} / {{ element2.view_count }});
+                        </script>
+                       </h6>
                    </div>
                 </div>
             </div>
