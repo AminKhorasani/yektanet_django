@@ -5,22 +5,25 @@ from .forms import AdForm
 from django.urls import reverse
 from datetime import datetime
 from django.views.generic import View, TemplateView
-from django.db.models.functions import ExtractHour, TruncHour, Coalesce
-from django.db.models import Count, F
-from itertools import chain
-from django.db import models
+from django.db.models.functions import ExtractHour
+from django.db.models import Count
+from .serializers import AdSerializer, AdvertiserSerializer, ClickSerializer, ViewSerializer
+from rest_framework import generics
+from .serializers import AdSerializer, AdvertiserSerializer
+from rest_framework.response import Response
 
 
-class HomeView(View):
+class HomeView(generics.ListAPIView):
+    serializer_class = AdvertiserSerializer
+    queryset = Advertiser.objects.all()
 
-    @staticmethod
-    def get(request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
+        super().get(request, *args, **kwargs)
         advertisers = Advertiser.objects.all()
         for advertiser in advertisers:
             for ad in advertiser.ads.all():
                 ViewModel.objects.create(ad=ad, ip=request.user.ip, view_time=datetime.now())
-        context = {'advertisers': advertisers}
-        return render(request, 'advertiser_management/ads.html', context)
+        return self.list(request, *args, **kwargs)
 
 
 class AdIncClicksView(View):
