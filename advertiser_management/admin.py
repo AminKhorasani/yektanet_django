@@ -4,16 +4,15 @@ from .models import Ad, Advertiser
 
 @admin.register(Ad)
 class AdAdmin(admin.ModelAdmin):
-    readonly_fields = ['clicks', 'views']
+    list_filter = ('approve',)
+    search_fields = ('title',)
 
 
 class AdTabular(admin.TabularInline):
     model = Ad
-    readonly_fields = ['views', 'clicks']
 
 
 @admin.register(Advertiser)
 class AdvertiserAdmin(admin.ModelAdmin):
-    readonly_fields = ['clicks', 'views']
     inlines = [AdTabular]
 
