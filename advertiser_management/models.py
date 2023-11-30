@@ -11,7 +11,7 @@ class Advertiser(models.Model):
 
 
 class Ad(models.Model):
-    advertiser = models.ForeignKey(Advertiser, on_delete=models.CASCADE, related_name='ads', null=True)
+    advertiser = models.ForeignKey(Advertiser, on_delete=models.CASCADE, related_name='ads')
     title = models.CharField(max_length=400)
     link = models.URLField()
     img_url = models.URLField()
@@ -22,13 +22,13 @@ class Ad(models.Model):
 
 
 class View(models.Model):
-    ad = models.ForeignKey(Ad, on_delete=models.CASCADE, null=True)
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
     ip = models.CharField(max_length=100)
     view_time = models.DateTimeField()
 
 
 class Click(models.Model):
-    ad = models.ForeignKey(Ad, on_delete=models.CASCADE, null=True)
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
     ip = models.CharField(max_length=100)
     click_time = models.DateTimeField()
 
