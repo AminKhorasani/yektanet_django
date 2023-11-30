@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from advertiser_management.models import Advertiser, Ad, Click, View as ViewModel
 from django.shortcuts import redirect
 from .forms import AdForm
@@ -16,10 +16,12 @@ class HomeView(View):
     @staticmethod
     def get(request, *args, **kwargs):
         advertisers = Advertiser.objects.all()
-        for advertiser in advertisers:
-            for ad in advertiser.ads.all():
-                ViewModel.objects.create(ad=ad, ip=request.user.ip, view_time=datetime.now())
+        advertise = Ad.objects.annotate(advertiser_name=F('advertiser__name'))
+        for ad in advertise:
+            ViewModel.objects.create(ad=ad, ip=request.user.ip, view_time=datetime.now())
+
         context = {'advertisers': advertisers}
+
         return render(request, 'advertiser_management/ads.html', context)
 
 
@@ -27,7 +29,7 @@ class AdIncClicksView(View):
 
     @staticmethod
     def get(request, object_id, *args, **kwargs):
-        ad = Ad.objects.get(id=object_id)
+        ad = get_object_or_404(Ad, id=object_id)
         Click.objects.create(ad=ad, ip=request.user.ip, click_time=datetime.now())
         return redirect(ad.link)
 
@@ -53,15 +55,15 @@ class ReportView(View):
     @staticmethod
     def get(request, *args, **kwargs):
 
-        qs_clicks = (Click.objects.values('ad__id').
+        qs_clicks = (Click.objects.values('ad__title').
                      annotate(click_time=ExtractHour('click_time')).
                      annotate(click_count=Count('id')))
-        qs_views = (ViewModel.objects.values('ad__id').
+        qs_views = (ViewModel.objects.values('ad__title').
                     annotate(view_time=ExtractHour('view_time')).
                     annotate(view_count=Count('id')))
 
-        total_clicks = Click.objects.annotate(total_clicks=Count('id')).count()
-        total_views = ViewModel.objects.annotate(total_views=Count('id')).count()
+        total_clicks = Click.objects.count()
+        total_views = ViewModel.objects.count()
         ctr = total_clicks / total_views
         # qs_ads = ((Ad.objects.values_list('id', flat=True).
         #           annotate(clicks_time=ExtractHour('click__click_time'))).

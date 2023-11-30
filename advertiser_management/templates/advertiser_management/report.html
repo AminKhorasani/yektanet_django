@@ -14,31 +14,25 @@
 </div>
 
 <div class="container" dir="rtl">
-    {% for element2,element in clicks_views %}
+    {% for view,click in clicks_views %}
         <div class="card mt-2 p-2">
-            <h5 class="card-title"> time: {{ element.click_time }}</h5>
+            <h5 class="card-title"> time: {{ click.click_time }}</h5>
             <div class="card-body">
                 <div class="row">
                    <div class="card-body">
-                       <h6> total clicks: {{ element.click_count }} </h6>
-                       <h6> total views : {{ element2.view_count }}</h6>
+                       <h6> total clicks: {{ click.click_count }} </h6>
+                       <h6> total views: {{ view.view_count }}</h6>
                        <h6>
                        CTR:
                         <script>
-                            document.write({{ element.click_count }} / {{ element2.view_count }});
+                            document.write({{ click.click_count }} / {{ view.view_count }});
                         </script>
                        </h6>
+                       <h6> Advertise: {{ click.ad__title }}</h6>
                    </div>
                 </div>
             </div>
         </div>
     {% endfor %}
-<!--<div class="container" dir="rtl">-->
-<!--    {% for element in views_data %}-->
-<!--        <div class="card-body">-->
-<!--            <h6> view : {{ element.view_count }} </h6>-->
-<!--&lt;!&ndash;            <h6> CTR: {{ element.ctr }} </h6>&ndash;&gt;-->
-<!--        </div>-->
-<!--    {% endfor %}-->
 </body>
 </html>
