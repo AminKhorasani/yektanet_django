@@ -5,10 +5,8 @@ from .forms import AdForm
 from django.urls import reverse
 from datetime import datetime
 from django.views.generic import View, TemplateView
-from django.db.models.functions import ExtractHour, TruncHour, Coalesce
+from django.db.models.functions import ExtractHour
 from django.db.models import Count, F
-from itertools import chain
-from django.db import models
 
 
 class HomeView(View):
