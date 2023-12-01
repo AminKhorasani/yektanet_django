@@ -23,12 +23,12 @@ class Ad(models.Model):
 
 class View(models.Model):
     ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
-    ip = models.CharField(max_length=100)
+    ip = models.GenericIPAddressField()
     view_time = models.DateTimeField()
 
 
 class Click(models.Model):
     ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
-    ip = models.CharField(max_length=100)
+    ip = models.GenericIPAddressField()
     click_time = models.DateTimeField()
 

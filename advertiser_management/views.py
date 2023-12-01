@@ -8,22 +8,48 @@ from django.views.generic import View, TemplateView
 from django.db.models.functions import ExtractHour
 from django.db.models import Count, F
 from .serializers import AdSerializer, AdvertiserSerializer, ClickSerializer, ViewSerializer
-from rest_framework import generics
-from .serializers import AdSerializer, AdvertiserSerializer
+from rest_framework import generics, permissions, authentication
+from rest_framework.views import APIView
 from rest_framework.response import Response
+from .serializers import AdSerializer, AdvertiserSerializer
+from . import serializers
 
 
-class HomeView(generics.ListAPIView):
-    serializer_class = AdvertiserSerializer
-    queryset = Advertiser.objects.all()
+class HomeViewAPI(APIView):
+    permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
-        super().get(request, *args, **kwargs)
+    @staticmethod
+    def get(request, *args, **kwargs):
+        serializer = serializers.AdSerializer(Ad.objects.all(), many=True)
+        return Response(serializer.data)
+
+
+class AdCreatorViewAPI(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @staticmethod
+    def post(request, *args, **kwargs):
+        data = request.data
+        serializer = serializers.AdSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=200, data=serializer.data)
+        else:
+            return Response(status=400, data=serializer.errors)
+
+
+class HomeView(View):
+
+    @staticmethod
+    def get(request, *args, **kwargs):
+        advertisers = Advertiser.objects.all()
         advertise = Ad.objects.annotate(advertiser_name=F('advertiser__name'))
         for ad in advertise:
-            ViewModel.objects.create(ad=ad, ip=request.user.ip, view_time=datetime.now())
+            ViewModel.objects.create(ad=ad, ip=request.ip, view_time=datetime.now())
 
-        return self.list(request, *args, **kwargs)
+        context = {'advertisers': advertisers}
+
+        return render(request, 'advertiser_management/ads.html', context)
 
 
 class AdIncClicksView(View):
@@ -31,7 +57,7 @@ class AdIncClicksView(View):
     @staticmethod
     def get(request, object_id, *args, **kwargs):
         ad = get_object_or_404(Ad, id=object_id)
-        Click.objects.create(ad=ad, ip=request.user.ip, click_time=datetime.now())
+        Click.objects.create(ad=ad, ip=request.ip, click_time=datetime.now())
         return redirect(ad.link)
 
 
