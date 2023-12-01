@@ -18,7 +18,10 @@ class HomeViewAPI(APIView):
 
     @staticmethod
     def get(request, *args, **kwargs):
-        serializer = serializers.AdSerializer(Ad.objects.all(), many=True)
+        serializer = serializers.AdSerializer(Ad.objects.order_by("id").all(), many=True)
+        advertise = Ad.objects.annotate(advertiser_name=F('advertiser__name'))
+        for ad in advertise:
+            ViewModel.objects.create(ad=ad, ip=request.ip, view_time=datetime.now())
         return Response(serializer.data)
 
 
@@ -48,6 +51,24 @@ class AdvertiserCreatorAPI(APIView):
             return Response(status=200, data=serializer.data)
         else:
             return Response(status=400, data=serializer.errors)
+
+
+class ReportViewAPI(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @staticmethod
+    def get(request, *args, **kwargs):
+        serializer = serializers.ViewSerializer(ViewModel.objects.all(), many=True)
+        return Response(serializer.data)
+
+
+class ReportClickAPI(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @staticmethod
+    def get(request, *args, **kwargs):
+        serializer = serializers.ClickSerializer(Click.objects.all(), many=True)
+        return Response(serializer.data)
 
 
 class HomeView(View):

@@ -7,5 +7,6 @@ urlpatterns = [
     path('click/<int:object_id>/', views.AdIncClicksView.as_view(), name='detail'),
     path('ad_creator/', views.AdCreatorViewAPI.as_view(), name='ad_create'),
     path('advertiser_creator/', views.AdvertiserCreatorAPI.as_view(), name='ad_create'),
-    path('report', views.ReportView.as_view(), name='report')
+    path('view_report', views.ReportViewAPI.as_view(), name='view_report'),
+    path('click_report', views.ReportClickAPI.as_view(), name='click_report')
 ]
