@@ -7,11 +7,9 @@ from datetime import datetime
 from django.views.generic import View, TemplateView
 from django.db.models.functions import ExtractHour
 from django.db.models import Count, F
-from .serializers import AdSerializer, AdvertiserSerializer, ClickSerializer, ViewSerializer
 from rest_framework import generics, permissions, authentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import AdSerializer, AdvertiserSerializer
 from . import serializers
 
 
@@ -31,6 +29,20 @@ class AdCreatorViewAPI(APIView):
     def post(request, *args, **kwargs):
         data = request.data
         serializer = serializers.AdSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=200, data=serializer.data)
+        else:
+            return Response(status=400, data=serializer.errors)
+
+
+class AdvertiserCreatorAPI(APIView):
+    permissions_classes = [permissions.IsAuthenticated]
+
+    @staticmethod
+    def post(request, *args, **kwargs):
+        data = request.data
+        serializer = serializers.AdvertiserSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(status=200, data=serializer.data)

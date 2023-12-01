@@ -3,10 +3,11 @@ from .models import *
 from rest_framework.exceptions import ValidationError
 
 
-class AdvertiserSerializer(serializers.Serializer):
+class AdvertiserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advertiser
         fields = '__all__'
+        read_only_fields = ['id']
 
 
 class AdSerializer(serializers.Serializer):
