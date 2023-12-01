@@ -25,6 +25,16 @@ class HomeViewAPI(APIView):
         return Response(serializer.data)
 
 
+class AdIncClicksAPI(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @staticmethod
+    def get(request, object_id, *args, **kwargs):
+        ad = get_object_or_404(Ad, id=object_id)
+        Click.objects.create(ad=ad, ip=request.ip, click_time=datetime.now())
+        return redirect(ad.link)
+
+
 class AdCreatorViewAPI(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
