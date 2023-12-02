@@ -1,6 +1,8 @@
 from django.db import models
-
-# Create your models here.
+from django.db.models.functions import ExtractHour
+from datetime import datetime
+from django.db.models import Count, F, Max
+from .services import get_total
 
 
 class Advertiser(models.Model):
@@ -22,13 +24,15 @@ class Ad(models.Model):
 
 
 class View(models.Model):
-    ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE ,related_name='ad_view')
     ip = models.GenericIPAddressField()
     view_time = models.DateTimeField()
 
 
 class Click(models.Model):
-    ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
+    id = models.IntegerField(primary_key=True)
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE, related_name='ad_click')
     ip = models.GenericIPAddressField()
     click_time = models.DateTimeField()
+
 

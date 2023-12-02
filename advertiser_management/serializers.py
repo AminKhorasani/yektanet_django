@@ -34,8 +34,10 @@ class AdSerializer(serializers.Serializer):
 
 
 class ClickSerializer(serializers.Serializer):
+    id = serializers.ReadOnlyField()
     ip = serializers.IPAddressField()
     click_time = serializers.DateTimeField()
+    ad = serializers.PrimaryKeyRelatedField(queryset=Ad.objects.all())
 
     def create(self, validated_data):
         return Click.objects.create(**validated_data)
@@ -50,7 +52,8 @@ class ClickSerializer(serializers.Serializer):
 class ViewSerializer(serializers.Serializer):
     view_time = serializers.DateTimeField()
     ad = serializers.PrimaryKeyRelatedField(queryset=Ad.objects.all())
-    
+    ip = serializers.IPAddressField()
+
     def create(self, validated_data):
         return View.objects.create(**validated_data)
 
@@ -59,3 +62,32 @@ class ViewSerializer(serializers.Serializer):
         instance.ad = validated_data.get('Ad', instance.ad)
         instance.save()
         return instance
+
+
+# class AdvertiserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Advertiser
+#         fields = '__all__'
+#
+#
+# class AdSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Ad
+#         fields = '__all__'
+#
+#
+# class ClickSerializer(serializers.ModelSerializer):
+#     click_hour = serializers.CharField()
+#
+#     class Meta:
+#         model = Click
+#         fields = '__all__'
+#
+#
+# class ViewSerializer(serializers.ModelSerializer):
+#     ctr = serializers.CharField()
+#
+#     class Meta:
+#         model = View
+#         fields = '__all__'
+#
