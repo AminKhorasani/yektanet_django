@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Ad, Advertiser
+from .models import *
 
 
 @admin.register(Ad)
@@ -16,3 +16,14 @@ class AdTabular(admin.TabularInline):
 class AdvertiserAdmin(admin.ModelAdmin):
     inlines = [AdTabular]
 
+
+@admin.register(Click)
+class ClickAdmin(admin.ModelAdmin):
+    model = Click
+    list_display = ['created_time']
+
+
+@admin.register(View)
+class ViewAdmin(admin.ModelAdmin):
+    model = View
+    list_display = ['created_time']
