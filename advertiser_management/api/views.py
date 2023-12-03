@@ -1,7 +1,9 @@
 from rest_framework import viewsets, permissions
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import AllowAny
 from .serializers import AdvertiserSerializer, AdSerializer
-from advertiser_management.models import Advertiser, Ad
-from advertiser_management.services import update_advertisers_views, update_advertiser_views
+from advertiser_management.models import Advertiser, Ad, View, Click
+from advertiser_management.services import ctr_per_hour, update_advertisers_views, update_advertiser_views
 
 
 class HomeViewAPI(viewsets.ModelViewSet):
